@@ -97,33 +97,5 @@ After updating data you can click the Refresh button (or reload the page) to ref
 - The filter menu uses `role="menu"` and each item is `role="menuitemradio"` with `aria-checked`.
 - Pressing `Escape` will close the filter menu and return focus to the button.
 
-## Troubleshooting
-
-- "Failed to resolve import ../config/settings": This can happen if a component in `src/components/ui` imports `../config/settings` — the correct relative path is `../../config/settings`. Use the correct relative imports.
-- If Vite reports a port is in use, it will try the next one (e.g. `5174`). You can force a port using `vite --port 5173` or edit `vite.config.ts`.
-
-## Suggestions / Next steps
-
-- Add ESLint + Prettier for consistent code style.
-- Add unit tests (Vitest or Jest) especially for ranking logic.
-- Add an i18n approach (react-intl / i18next) for managing translations instead of hard-coding strings.
-- Replace full-page reload with a client-side refresh (use `onRefresh` to re-fetch data) to avoid losing scroll position or state.
-
-## Contributing
-
-Small, focused PRs are welcome. Please:
-
-- Run `npm run typecheck` before opening a PR.
-- Keep changes small and document behavior changes in the PR description.
-
 ## License
-
-Choose an appropriate license for your project (e.g. MIT). This repo does not include a license file yet.
-
----
-
-If you want, I can:
-
-- scaffold ESLint + Prettier,
-- add a small test for the ranking algorithm,
-- or switch the time display to a compact `HH:MM:SS` format. Which would you prefer next?
+...
