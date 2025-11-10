@@ -1,9 +1,6 @@
-function App() {
-  return (
-    <div>
-      <h1>Welcome to the Startups Website!</h1>
-    </div>
-  );
-}
+import React from "react";
+import Home from "./pages/home";
 
-export default App;
+export default function App() {
+  return <Home />;
+}
