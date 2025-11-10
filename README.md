@@ -71,7 +71,7 @@ Leaderboards are computed in `src/pages/home.tsx`. Ranking follows these rules:
 
 - Items are sorted descending by the value (hours or total hours).
 - Items with equal values receive the same `rank`.
-- If N items share a rank R, the next item after the tie receives rank `R + N - 1`.
+- If N items share a rank R, the next item after the tie receives rank `R + N`.
 
 This gives ranking like: 1, 2, 2, 2, 5, ... if three entries tie for rank 2.
 
