@@ -4,5 +4,7 @@ export { InfoStrip } from "./ui/InfoStrip";
 export { SearchBar } from "./ui/SearchBar";
 export { Tabs } from "./ui/Tabs";
 export { FloatingRefresh } from "./ui/FloatingRefresh";
+export { MeanBlock } from "./ui/MeanBlock";
 export { StartupCard } from "./StartupCard";
 export { LeaderboardRow } from "./LeaderboardRow";
+export { LeaderboardView } from "./LeaderboardView";

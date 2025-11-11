@@ -2,7 +2,7 @@ import React from "react";
 import { SETTINGS } from "../../config/settings";
 
 export const Tabs = ({ active, onChange }: { active: number; onChange: (i: number) => void }) => {
-  const labels = ["Remaining light", `Leaderboard - last ${SETTINGS.expiryDays} days`, "Leaderboard - overall"];
+  const labels = ["Remaining light", "Leaderboards"];
   return (
     <div className="mt-3">
       <ul className="nav nav-pills bg-dark border border-secondary rounded-3 p-1">

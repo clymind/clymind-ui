@@ -1,17 +1,21 @@
 import React from "react";
 
-export const FloatingRefresh = ({ onClick }: { onClick: () => void }) => (
+/**
+ * FloatingRefresh button: reloads page or triggers custom callback
+ * Defaults to window.location.reload() if no onClick provided
+ */
+export const FloatingRefresh = ({ onClick }: { onClick?: () => void }) => (
   <button
+    type="button"
+    className="btn btn-outline-success h-100 px-3"
     onClick={() => {
       try {
-        onClick();
+        (onClick || (() => window.location.reload()))();
       } catch (e) {
-        /* ignore */
+        /* ignore errors from caller */
       }
-      window.location.reload();
     }}
-    className="btn btn-success position-fixed bottom-0 end-0 m-4 shadow"
-    aria-label="Refresh"
+    aria-label="Refresh results"
     title="Refresh"
   >
     Refresh

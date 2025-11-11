@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { SETTINGS } from "../../config/settings";
-
-export type FilterMode = "all" | "risk" | "inactive";
+import { FloatingRefresh } from "./FloatingRefresh";
+import type { FilterMode } from "../../types";
 
 export const SearchBar = ({
   query,
@@ -34,29 +34,12 @@ export const SearchBar = ({
   <form
     className="mt-3"
     role="search"
-    onSubmit={(e) => e.preventDefault()} /* keep behavior simple */
+    onSubmit={(e) => e.preventDefault()}
   >
     <div className="row g-2 align-items-stretch">
       <div className="col-auto">
-        <button
-          type="button"
-          className="btn btn-outline-success h-100 px-3"
-          onClick={() => {
-            try {
-              onRefresh();
-            } catch (e) {
-              /* ignore errors from caller */
-            }
-            // full page reload as requested
-            window.location.reload();
-          }}
-          aria-label="Refresh results"
-          title="Refresh"
-        >
-          Refresh
-        </button>
+        <FloatingRefresh onClick={onRefresh} />
       </div>
-
       <div className="col">
         <div className="input-group input-group-lg">
           <span

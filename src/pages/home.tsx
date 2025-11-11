@@ -1,205 +1,200 @@
+/**
+ * Home Page: Main dashboard for all startups
+ *
+ * Features:
+ * 1. Info Strip: Displays global settings (expiryDays, lightFactor, dailyLightHours)
+ * 2. Search & Filter: Find startups by name, filter by status (all/risk/inactive)
+ * 3. Two tabs:
+ *    - Remaining Light: Grid of startup cards with live countdown timers
+ *    - Leaderboards: Rankings with toggle between "Last N days" and "Overall"
+ *
+ * State Management:
+ * - query: Search string for name filtering
+ * - activeTab: 0 (grid) or 1 (leaderboards)
+ * - leaderboardMode: "last" or "overall"
+ * - filterMode: "all", "risk", or "inactive"
+ *
+ * The component uses custom hook useLeaderboardData for leaderboard logic,
+ * dramatically reducing complexity from the previous 325+ line version.
+ */
+
 import React, { useMemo, useState } from "react";
-import { PageShell, Container, InfoStrip, SearchBar, Tabs, StartupCard, LeaderboardRow } from "../components";
-import { SETTINGS, STARTUPS, Startup } from "../config/settings";
+import {
+  PageShell,
+  Container,
+  InfoStrip,
+  SearchBar,
+  Tabs,
+  StartupCard,
+  LeaderboardView,
+} from "../components";
+import { SETTINGS, STARTUPS } from "../config/settings";
+import type { FilterMode } from "../types";
+import { useNavigate } from "react-router-dom";
+import { useLeaderboardData } from "../hooks/useLeaderboardData";
 import logo from "../assets/clymind-logo.png";
-import type { FilterMode } from "../components/ui/SearchBar";
 
+/**
+ * Home component: Main page of the application
+ *
+ * Render flow:
+ * 1. PageShell: Header with logo and conditional Home button
+ * 2. Container: Centered content wrapper
+ * 3. Header section: Title and description
+ * 4. InfoStrip: Global settings display
+ * 5. Search/Filter bar + Tab navigation
+ * 6. Content based on activeTab:
+ *    - Tab 0: Grid of startup cards
+ *    - Tab 1: Leaderboards with toggle and mean marker
+ */
 export default function Home() {
+  // ===== STATE =====
   const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<0 | 1 | 2>(0);
-  const [data, setData] = useState<Startup[]>(STARTUPS);
+  const [activeTab, setActiveTab] = useState<0 | 1>(0);
+  const [leaderboardMode, setLeaderboardMode] = useState<"last" | "overall">("last");
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
+  const navigate = useNavigate();
 
+  // ===== COMPUTED VALUES =====
   const q = query.trim().toLowerCase();
 
-  const passesFilter = (s: Startup) => {
+  /**
+   * Filter function: determines if a startup passes the current filter
+   * - "all": all startups pass
+   * - "risk": startup has some light but <= dailyLightHours (at-risk)
+   * - "inactive": startup has 0 light
+   */
+  const passesFilter = (s: any) => {
     if (filterMode === "inactive") return s.remainingLightSeconds <= 0;
-    if (filterMode === "risk") return s.remainingLightSeconds > 0 && s.remainingLightSeconds <= 10 * 3600;
+    if (filterMode === "risk")
+      return s.remainingLightSeconds > 0 && s.remainingLightSeconds <= 10 * 3600;
     return true;
   };
 
+  /**
+   * Filtered & sorted startup list for the grid view
+   * Rules:
+   * 1. Filter by name (prefix match with search query)
+   * 2. Filter by status (all/risk/inactive)
+   * 3. Sort alphabetically by name
+   */
   const filteredAlphabetical = useMemo(() => {
-    const byName = q ? data.filter(s => s.name.toLowerCase().startsWith(q)) : data.slice();
+    const byName = q ? STARTUPS.filter((s) => s.name.toLowerCase().startsWith(q)) : STARTUPS.slice();
     const byFilter = byName.filter(passesFilter);
     return byFilter.sort((a, b) => a.name.localeCompare(b.name));
-  }, [data, q, filterMode]);
+  }, [q, filterMode]);
 
+  // Threshold for "at-risk" warning (red pulse effect)
   const criticalSeconds = SETTINGS.dailyLightHours * 3600;
 
-  const refresh = () => {
-    setData(old => old.map(s => ({
-      ...s,
-      remainingLightSeconds: Math.max(0, s.remainingLightSeconds - Math.floor(Math.random() * 45)),
-    })));
-  };
-
+  // Map for O(1) startup lookups by ID (used for leaderboard zero-state detection)
   const byId = useMemo(() => {
-    const map = new Map<string, Startup>();
-    data.forEach(s => map.set(s.id, s));
+    const map = new Map();
+    STARTUPS.forEach((s) => map.set(s.id, s));
     return map;
-  }, [data]);
+  }, []);
 
-  const leaderboardLastNFull = useMemo(() => {
-    const sorted = [...data].sort((a, b) => b.lastNDaysWorkHours - a.lastNDaysWorkHours);
-    const rows: { rank: number; id: string; name: string; value: string }[] = [];
-    let prevValue: number | null = null;
-    let prevRank = 0;
-    let itemsWithPrevRank = 0;
+  // ===== LEADERBOARD DATA =====
+  /**
+   * Leaderboard for "Last N days" metric
+   * Uses custom hook for tie-aware ranking, filtering, and mean computation
+   */
+  const leaderboardLastN = useLeaderboardData(
+    {
+      data: STARTUPS,
+      query,
+      filterMode,
+      passesFilter,
+    },
+    "lastNDaysWorkHours"
+  );
 
-    for (let i = 0; i < sorted.length; i++) {
-      const s = sorted[i];
-      const val = s.lastNDaysWorkHours;
-      let rank: number;
+  /**
+   * Leaderboard for "Overall" metric
+   * Uses same hook with different metric key
+   */
+  const leaderboardTotal = useLeaderboardData(
+    {
+      data: STARTUPS,
+      query,
+      filterMode,
+      passesFilter,
+    },
+    "totalWorkHoursAbsolute"
+  );
 
-      if (prevValue === null) {
-        rank = 1;
-        itemsWithPrevRank = 1;
-      } else if (val === prevValue) {
-        rank = prevRank;
-        itemsWithPrevRank++;
-      } else {
-        rank = prevRank + itemsWithPrevRank;
-        itemsWithPrevRank = 1;
-      }
-
-      rows.push({ rank, id: s.id, name: s.name, value: `${s.lastNDaysWorkHours.toFixed(1)} h` });
-
-      prevValue = val;
-      prevRank = rank;
-    }
-
-    return rows;
-  }, [data]);
-
-  const leaderboardTotalFull = useMemo(() => {
-    const sorted = [...data].sort((a, b) => b.totalWorkHoursAbsolute - a.totalWorkHoursAbsolute);
-    const rows: { rank: number; id: string; name: string; value: string }[] = [];
-    let prevValue: number | null = null;
-    let prevRank = 0;
-    let itemsWithPrevRank = 0;
-
-    for (let i = 0; i < sorted.length; i++) {
-      const s = sorted[i];
-      const val = s.totalWorkHoursAbsolute;
-      let rank: number;
-
-      if (prevValue === null) {
-        rank = 1;
-        itemsWithPrevRank = 1;
-      } else if (val === prevValue) {
-        rank = prevRank;
-        itemsWithPrevRank++;
-      } else {
-        rank = prevRank + itemsWithPrevRank;
-        itemsWithPrevRank = 1;
-      }
-
-      rows.push({ rank, id: s.id, name: s.name, value: `${s.totalWorkHoursAbsolute.toFixed(0)} h` });
-
-      prevValue = val;
-      prevRank = rank;
-    }
-
-    return rows;
-  }, [data]);
-
-  const leaderboardLastNView = useMemo(() => {
-    return leaderboardLastNFull.filter(row => {
-      const s = byId.get(row.id)!;
-      const nameOk = !q || row.name.toLowerCase().startsWith(q);
-      const filterOk = passesFilter(s);
-      return nameOk && filterOk;
-    });
-  }, [leaderboardLastNFull, byId, q, filterMode]);
-
-  const leaderboardTotalView = useMemo(() => {
-    return leaderboardTotalFull.filter(row => {
-      const s = byId.get(row.id)!;
-      const nameOk = !q || row.name.toLowerCase().startsWith(q);
-      const filterOk = passesFilter(s);
-      return nameOk && filterOk;
-    });
-  }, [leaderboardTotalFull, byId, q, filterMode]);
-
+  // ===== RENDER =====
   return (
     <PageShell logoSrc={logo}>
       <Container className="py-4">
+        {/* Header section */}
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">All startups</h1>
           <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            This page shows the remaining light hours for each startup, with leaderboards that rank startups by total accumulated light hours over the last {SETTINGS.expiryDays} days and overall. You can reload the page after adding hours to the e-logbook, to see updated values, search startups by name, and filter them by remaining hours.
+            This page shows the remaining light hours for each startup, with leaderboards that rank
+            startups by total accumulated light hours over the last {SETTINGS.expiryDays} days and
+            overall. You can reload the page after adding hours to the e-logbook, to see updated
+            values, search startups by name, and filter them by remaining hours.
           </p>
         </div>
 
+        {/* Global settings info strip */}
         <InfoStrip
           expiryDays={SETTINGS.expiryDays}
           lightFactor={SETTINGS.lightFactor}
           dailyLightHours={SETTINGS.dailyLightHours}
         />
 
+        {/* Search, filter, and tab controls */}
         <div className="surface p-3 mt-3">
           <SearchBar
             query={query}
             onChange={setQuery}
-            onRefresh={refresh}
+            onRefresh={() => window.location.reload()}
             filterMode={filterMode}
             onFilterChange={setFilterMode}
           />
-          <Tabs active={activeTab} onChange={(i) => setActiveTab(i as 0 | 1 | 2)} />
+          <Tabs active={activeTab} onChange={(i) => setActiveTab(i as 0 | 1)} />
         </div>
 
+        {/* Main content area: changes based on activeTab */}
         <div className="mt-4">
+          {/* TAB 0: Startup cards grid */}
           {activeTab === 0 && (
             <div className="row g-4 justify-content-center">
-              {filteredAlphabetical.map(s => (
+              {filteredAlphabetical.map((s) => (
                 <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={s.id}>
                   <StartupCard
                     name={s.name}
                     remainingLightSeconds={s.remainingLightSeconds}
                     criticalSeconds={criticalSeconds}
-                    onClick={() => console.log("Open startup:", s.name)}
+                    onClick={() => navigate(`/startup/${s.id}`)}
                   />
                 </div>
               ))}
             </div>
           )}
 
+          {/* TAB 1: Leaderboards with toggle and mean marker */}
           {activeTab === 1 && (
-            <>
-              <h2 className="h5 text-light mb-2">Leaderboard - last {SETTINGS.expiryDays} days</h2>
-              <div className="d-flex flex-column gap-2">
-                {leaderboardLastNView.map(row => (
-                  <LeaderboardRow
-                    key={row.id}
-                    rank={row.rank}
-                    name={row.name}
-                    value={row.value}
-                    onClick={() => console.log("Open startup:", row.name)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
-          {activeTab === 2 && (
-            <>
-              <h2 className="h5 text-light mb-2">Leaderboard - overall</h2>
-              <div className="d-flex flex-column gap-2">
-                {leaderboardTotalView.map(row => (
-                  <LeaderboardRow
-                    key={row.id}
-                    rank={row.rank}
-                    name={row.name}
-                    value={row.value}
-                    onClick={() => console.log("Open startup:", row.name)}
-                  />
-                ))}
-              </div>
-            </>
+            <LeaderboardView
+              mode={leaderboardMode}
+              onModeChange={setLeaderboardMode}
+              // Show the appropriate leaderboard based on selected mode
+              rows={leaderboardMode === "last" ? leaderboardLastN.viewRows : leaderboardTotal.viewRows}
+              mean={leaderboardMode === "last" ? leaderboardLastN.mean : leaderboardTotal.mean}
+              meanInsertPos={
+                leaderboardMode === "last"
+                  ? leaderboardLastN.meanInsertPos
+                  : leaderboardTotal.meanInsertPos
+              }
+              startupsById={byId}
+              metricKey={leaderboardMode === "last" ? "lastNDaysWorkHours" : "totalWorkHoursAbsolute"}
+              onRowClick={(id) => navigate(`/startup/${id}`)}
+            />
           )}
         </div>
       </Container>
     </PageShell>
   );
 }
-
