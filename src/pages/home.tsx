@@ -132,9 +132,6 @@ export default function Home() {
         {/* Header section */}
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">{t("allStartupsTitle")}</h1>
-          <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            {t("allStartupsDesc", { d: SETTINGS.expiryDays })}
-          </p>
         </div>
 
         {/* Global settings info strip */}
