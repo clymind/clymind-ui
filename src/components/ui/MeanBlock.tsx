@@ -12,6 +12,7 @@
  */
 
 import React from "react";
+import { useI18n } from "../../i18n";
 
 /** Bootstrap success color used for the mean marker to match refresh button */
 const MEAN_COLOR = "var(--bs-success)";
@@ -31,6 +32,7 @@ const MEAN_COLOR = "var(--bs-success)";
  * // mean                         4.5 h
  */
 export const MeanBlock: React.FC<{ value: string }> = ({ value }) => {
+  const { t } = useI18n();
   return (
     <div
       className="my-2"
@@ -56,7 +58,7 @@ export const MeanBlock: React.FC<{ value: string }> = ({ value }) => {
 
       {/* Row below the line: "mean" label on left, value on right */}
       <div className="text-start fw-semibold" style={{ color: MEAN_COLOR }}>
-        mean
+        {t("mean")}
       </div>
       {/* Middle column (empty) maintains alignment with the line above */}
       <div />

@@ -13,6 +13,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import StartupPage from "./pages/startup";
+import { I18nProvider } from "./i18n";
 
 /**
  * App component: Main entry point for application routing
@@ -21,14 +22,15 @@ import StartupPage from "./pages/startup";
  */
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Main page: all startups grid and leaderboards */}
-        <Route path="/" element={<Home />}/>
-        
-        {/* Startup detail page: specific startup metrics and stats */}
-        <Route path="/startup/:id" element={<StartupPage />}/>
-      </Routes>
-    </BrowserRouter>
+    <I18nProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Main page: all startups grid and leaderboards */}
+          <Route path="/" element={<Home />}/>
+          {/* Startup detail page: specific startup metrics and stats */}
+          <Route path="/startup/:id" element={<StartupPage />}/>
+        </Routes>
+      </BrowserRouter>
+    </I18nProvider>
   );
 }

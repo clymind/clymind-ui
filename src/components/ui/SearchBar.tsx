@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { SETTINGS } from "../../config/settings";
 import { FloatingRefresh } from "./FloatingRefresh";
 import type { FilterMode } from "../../types";
+import { useI18n } from "../../i18n";
 
 export const SearchBar = ({
   query,
@@ -30,6 +31,7 @@ export const SearchBar = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const { t } = useI18n();
   return (
   <form
     className="mt-3"
@@ -59,15 +61,15 @@ export const SearchBar = ({
           </span>
 
           <label htmlFor="search-input" className="visually-hidden">
-            Search startups
+            {t("searchStartups")}
           </label>
           <input
             id="search-input"
             value={query}
             onChange={(e) => onChange(e.target.value)}
             className="form-control bg-dark text-light border-secondary"
-            placeholder="Search startups…"
-            aria-label="Search startups"
+            placeholder={t("searchPlaceholder")}
+            aria-label={t("searchStartups")}
             autoComplete="off"
           />
         </div>
@@ -81,8 +83,8 @@ export const SearchBar = ({
           data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          aria-label="Apri filtri"
-          title="Filtri"
+          aria-label={t("filters")}
+          title={t("filters")}
         >
           <svg
             className="filter-icon"
@@ -99,7 +101,7 @@ export const SearchBar = ({
           ref={dropdownMenuRef}
           className="dropdown-menu dropdown-menu-end filter-menu"
           role="menu"
-          aria-label="Opzioni filtro"
+          aria-label={t("filterOptions")}
         >
           <li>
             <button
@@ -108,7 +110,7 @@ export const SearchBar = ({
               className={`dropdown-item ${filterMode === "all" ? "active" : ""}`}
               onClick={() => onFilterChange("all")}
             >
-              Show all startups
+              {t("showAll")}
             </button>
           </li>
           <li>
@@ -118,7 +120,7 @@ export const SearchBar = ({
               className={`dropdown-item ${filterMode === "risk" ? "active" : ""}`}
               onClick={() => onFilterChange("risk")}
             >
-              Show at-risk startups (0 - {SETTINGS.dailyLightHours}h)
+              {t("showRisk", { h: SETTINGS.dailyLightHours })}
             </button>
           </li>
           <li>
@@ -128,7 +130,7 @@ export const SearchBar = ({
               className={`dropdown-item ${filterMode === "inactive" ? "active" : ""}`}
               onClick={() => onFilterChange("inactive")}
             >
-              Show inactive (0h)
+              {t("showInactive")}
             </button>
           </li>
         </ul>

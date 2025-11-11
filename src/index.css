@@ -98,3 +98,18 @@
 .selectable-row.zero:hover{
   background-color: var(--danger-veil-hover);
 }
+
+/* Responsive grid for startup cards: equal-sized, auto-wrap with min width */
+.responsive-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem; /* similar to g-4 */
+  align-items: stretch; /* ensure items match row height */
+}
+.responsive-grid > .grid-item{
+  display: flex;
+}
+.responsive-grid .startup-card{
+  width:100%;
+  height:100%;
+}

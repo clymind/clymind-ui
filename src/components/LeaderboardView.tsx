@@ -22,6 +22,7 @@ import { LeaderboardRow, MeanBlock } from "../components";
 import { formatHoursWithSuffix } from "../lib/format";
 import { SETTINGS } from "../config/settings";
 import { Startup, LeaderboardRow as LeaderboardRowType } from "../types";
+import { useI18n } from "../i18n";
 
 /**
  * Props for LeaderboardView component
@@ -78,6 +79,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
   metricKey,
   onRowClick,
 }) => {
+  const { t } = useI18n();
   // Build the rendered leaderboard by:
   // 1. Creating LeaderboardRow for each row (with zero-state detection)
   // 2. Inserting MeanBlock at the correct position
@@ -114,7 +116,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
       {/* Toggle buttons: Last N days / Overall */}
       <div className="text-center mb-3">
         <div className="d-flex justify-content-center">
-          <div className="btn-group" role="group" aria-label="Leaderboard mode">
+          <div className="btn-group" role="group" aria-label={t("leaderboardMode")}>
             {/* Last N days button */}
             <button
               type="button"
@@ -124,7 +126,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
               onClick={() => onModeChange("last")}
               style={{ minWidth: 160 }}
             >
-              Last {SETTINGS.expiryDays} days
+              {t("lastNDays", { d: SETTINGS.expiryDays })}
             </button>
             {/* Overall button */}
             <button
@@ -135,7 +137,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
               onClick={() => onModeChange("overall")}
               style={{ minWidth: 120 }}
             >
-              Overall
+              {t("overall")}
             </button>
           </div>
         </div>

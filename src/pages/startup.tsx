@@ -23,6 +23,7 @@ import { SETTINGS, STARTUPS } from "../config/settings";
 import { getLeaderboardRows } from "../lib/calculations";
 import type { Startup } from "../types";
 import logo from "../assets/clymind-logo.png";
+import { useI18n } from "../i18n";
 
 export default function StartupPage() {
   const { id } = useParams<{ id: string }>();
@@ -36,12 +37,13 @@ export default function StartupPage() {
   const [state, setState] = useState<Startup | undefined>(initial);
 
   if (!state) {
+    const { t } = useI18n();
     return (
       <PageShell logoSrc={logo}>
         <Container className="py-4 text-center">
-          <h1 className="display-6 fw-bold mt-2">Startup not found</h1>
+          <h1 className="display-6 fw-bold mt-2">{t("startupNotFound")}</h1>
           <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            We couldn’t find this startup. Please go back to the homepage and pick another one.
+            {t("startupNotFoundDesc")}
           </p>
         </Container>
       </PageShell>
@@ -131,6 +133,7 @@ export default function StartupPage() {
     return undefined; // darker default
   };
 
+  const { t } = useI18n();
   return (
     <PageShell logoSrc={logo}>
       <Container className="py-4">
@@ -138,7 +141,8 @@ export default function StartupPage() {
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">{state.name}</h1>
           <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            The page shows the remaining hours for the startup {state.name} and the work and light hours accumulated over the last {expiryDays} days. Press Refresh to update the hours.
+            {/* Keep name untranslated */}
+            {t("startupDetailDesc", { name: state.name, d: expiryDays })}
           </p>
         </div>
 
@@ -156,7 +160,7 @@ export default function StartupPage() {
                 <span className="display-1 fw-bold ms-2" style={{ fontSize: '4.0rem' }}>{seconds % 60}</span>
                 <span className="display-6 fw-semibold">s</span>
               </div>
-              <div className="stat-label small opacity-75">remaining light</div>
+              <div className="stat-label small opacity-75">{t("remainingLight")}</div>
             </div>
 
             {/* Row with work hours -> arrow -> total light hours */}
@@ -164,7 +168,7 @@ export default function StartupPage() {
               <div className="row align-items-center text-center">
                 <div className="col-5">
                   <div className="stat-number display-2 fw-bold">{formatNumber(workLastN)}</div>
-                  <div className="stat-label small opacity-75">work hours over the last {expiryDays} days</div>
+                  <div className="stat-label small opacity-75">{t("workHoursLastD", { d: expiryDays })}</div>
                 </div>
                 {/* Arrow indicator */}
                 <div className="col-2">
@@ -172,7 +176,7 @@ export default function StartupPage() {
                 </div>
                 <div className="col-5">
                   <div className="stat-number display-2 fw-bold">{formatNumber(totalLightLastN)}</div>
-                  <div className="stat-label small opacity-75">total light hours accumulated over the last {expiryDays} days</div>
+                  <div className="stat-label small opacity-75">{t("totalLightHoursLastD", { d: expiryDays })}</div>
                 </div>
               </div>
             </div>
@@ -201,7 +205,7 @@ export default function StartupPage() {
           <div className="col-12 col-md-6">
             <div className="surface p-3" style={getRankCardStyle(rankOverall)}>
               <div className="d-flex justify-content-between align-items-center">
-                <span className="text-light fw-semibold">ranking overall</span>
+                <span className="text-light fw-semibold">{t("rankingOverall")}</span>
                 <span className="display-6 fw-bold text-light">{rankOverall}</span>
               </div>
             </div>
@@ -211,7 +215,7 @@ export default function StartupPage() {
           <div className="col-12 col-md-6">
             <div className="surface p-3" style={getRankCardStyle(rankLastN)}>
               <div className="d-flex justify-content-between align-items-center">
-                <span className="text-light fw-semibold">ranking last {expiryDays} days</span>
+                <span className="text-light fw-semibold">{t("rankingLastD", { d: expiryDays })}</span>
                 <span className="display-6 fw-bold text-light">{rankLastN}</span>
               </div>
             </div>

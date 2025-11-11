@@ -33,6 +33,7 @@ import type { FilterMode } from "../types";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "../hooks/useLeaderboardData";
 import logo from "../assets/clymind-logo.png";
+import { useI18n } from "../i18n";
 
 /**
  * Home component: Main page of the application
@@ -48,6 +49,7 @@ import logo from "../assets/clymind-logo.png";
  *    - Tab 1: Leaderboards with toggle and mean marker
  */
 export default function Home() {
+  const { t } = useI18n();
   // ===== STATE =====
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState<0 | 1>(0);
@@ -129,12 +131,9 @@ export default function Home() {
       <Container className="py-4">
         {/* Header section */}
         <div className="text-center mb-2">
-          <h1 className="display-6 fw-bold mt-2">All startups</h1>
+          <h1 className="display-6 fw-bold mt-2">{t("allStartupsTitle")}</h1>
           <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            This page shows the remaining light hours for each startup, with leaderboards that rank
-            startups by total accumulated light hours over the last {SETTINGS.expiryDays} days and
-            overall. You can reload the page after adding hours to the e-logbook, to see updated
-            values, search startups by name, and filter them by remaining hours.
+            {t("allStartupsDesc", { d: SETTINGS.expiryDays })}
           </p>
         </div>
 
@@ -161,9 +160,9 @@ export default function Home() {
         <div className="mt-4">
           {/* TAB 0: Startup cards grid */}
           {activeTab === 0 && (
-            <div className="row g-4 justify-content-center">
+            <div className="responsive-grid">
               {filteredAlphabetical.map((s) => (
-                <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={s.id}>
+                <div className="grid-item" key={s.id}>
                   <StartupCard
                     name={s.name}
                     remainingLightSeconds={s.remainingLightSeconds}
