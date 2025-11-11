@@ -14,8 +14,8 @@
 import React from "react";
 import { useI18n } from "../../i18n";
 
-/** Bootstrap success color used for the mean marker to match refresh button */
-const MEAN_COLOR = "var(--bs-success)";
+/** Use soft surface color for the mean marker */
+const MEAN_COLOR = "var(--warm-beige)";
 
 /**
  * MeanBlock: Renders a mean marker in leaderboards

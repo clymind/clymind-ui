@@ -140,6 +140,10 @@ export default function StartupPage() {
         {/* Titolo e descrizione (stesse posizioni della Home) */}
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">{state.name}</h1>
+          <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
+            {/* Keep name untranslated */}
+            {t("startupDetailDesc", { name: state.name, d: expiryDays })}
+          </p>
         </div>
 
         <InfoStrip expiryDays={expiryDays} lightFactor={lightFactor} dailyLightHours={dailyLightHours} />
@@ -202,7 +206,7 @@ export default function StartupPage() {
             <div className="surface p-3" style={getRankCardStyle(rankOverall)}>
               <div className="d-flex justify-content-between align-items-center">
                 <span className="text-light fw-semibold">{t("rankingOverall")}</span>
-                <span className="display-6 fw-bold text-light">{rankOverall}</span>
+                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankOverall), color: '#111' }}>{rankOverall}</div>
               </div>
             </div>
           </div>
@@ -212,7 +216,7 @@ export default function StartupPage() {
             <div className="surface p-3" style={getRankCardStyle(rankLastN)}>
               <div className="d-flex justify-content-between align-items-center">
                 <span className="text-light fw-semibold">{t("rankingLastD", { d: expiryDays })}</span>
-                <span className="display-6 fw-bold text-light">{rankLastN}</span>
+                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankLastN), color: '#111' }}>{rankLastN}</div>
               </div>
             </div>
           </div>

@@ -87,7 +87,7 @@ export const PageShell = ({ children, logoSrc }: { children: React.ReactNode; lo
                         onClick={() => changeLang(code as Lang)}
                       >
                         <span>{label}</span>
-                        {lang === code && <span className="badge bg-success">✓</span>}
+                        {/* Removed visual checkmark for active language per request */}
                       </button>
                     </li>
                   ))}
