@@ -145,7 +145,7 @@ export default function Home() {
         />
 
         {/* Search, filter, and tab controls */}
-        <div className="surface p-3 mt-3">
+  <div className="surface mt-3">
           <SearchBar
             query={query}
             onChange={setQuery}

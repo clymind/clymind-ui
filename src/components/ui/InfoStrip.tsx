@@ -5,9 +5,9 @@ import { useI18n } from "../../i18n";
 export const InfoStrip = ({ expiryDays, lightFactor, dailyLightHours }: { expiryDays: number; lightFactor: number; dailyLightHours: number }) => {
   const { t } = useI18n();
   return (
-    <div className="row g-3 mt-3">
+  <div className="row cards-row mt-3">
       <div className="col-12 col-md-4">
-        <div className="surface p-3 h-100">
+  <div className="surface h-100">
           <div className="d-flex align-items-center gap-2 text-secondary small">
             <span className="info-label">{t("hoursPerDay")}</span>
             <span className="info-container" tabIndex={0} aria-label="info">
@@ -19,7 +19,7 @@ export const InfoStrip = ({ expiryDays, lightFactor, dailyLightHours }: { expiry
         </div>
       </div>
       <div className="col-12 col-md-4">
-        <div className="surface p-3 h-100">
+  <div className="surface h-100">
           <div className="d-flex align-items-center gap-2 text-secondary small">
             <span className="info-label">{t("lightFactor")}</span>
             <span className="info-container" tabIndex={0} aria-label="info">
@@ -31,7 +31,7 @@ export const InfoStrip = ({ expiryDays, lightFactor, dailyLightHours }: { expiry
         </div>
       </div>
       <div className="col-12 col-md-4">
-        <div className="surface p-3 h-100">
+  <div className="surface h-100">
           <div className="d-flex align-items-center gap-2 text-secondary small">
             <span className="info-label">{t("expiryLabel")}</span>
             <span className="info-container" tabIndex={0} aria-label="info">

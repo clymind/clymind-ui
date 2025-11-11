@@ -143,8 +143,8 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
         </div>
       </div>
 
-      {/* Leaderboard rows with mean marker */}
-      <div className="d-flex flex-column gap-2">{renderedRows}</div>
+  {/* Leaderboard rows with mean marker */}
+  <div className="stack-gap">{renderedRows}</div>
     </>
   );
 };

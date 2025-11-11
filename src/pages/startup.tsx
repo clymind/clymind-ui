@@ -116,12 +116,12 @@ export default function StartupPage() {
     [id, lightFactor]
   );
 
-  // Helper function to get rank color
+  // Helper function to get rank badge background color
   const getRankColor = (rank: number): string => {
     if (rank === 1) return "#d4af37"; // Gold
     if (rank === 2) return "#c0c0c0"; // Silver
     if (rank === 3) return "#cd7f32"; // Bronze
-    return "#a0a0a0"; // Gray for 4+
+    return "var(--warm-beige)"; // Soft background for 4+
   };
 
   // Background style: keep tinted background only for podium.
@@ -199,24 +199,24 @@ export default function StartupPage() {
           </div>
         </div>
 
-        {/* Ranking cards below main card */}
-        <div className="row g-3 mt-3">
+  {/* Ranking cards below main card */}
+  <div className="row cards-row mt-3">
           {/* Left card: Ranking Overall */}
           <div className="col-12 col-md-6">
-            <div className="surface p-3" style={getRankCardStyle(rankOverall)}>
+            <div className={`surface`} style={getRankCardStyle(rankOverall)}>
               <div className="d-flex justify-content-between align-items-center">
-                <span className="text-light fw-semibold">{t("rankingOverall")}</span>
-                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankOverall), color: '#111' }}>{rankOverall}</div>
+                <span className="fw-semibold fs-5" style={{ color: 'var(--light-gray)' }}>{t("rankingOverall")}</span>
+                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankOverall), color: rankOverall <= 3 ? '#111' : 'var(--deep-black)' }}>{rankOverall}</div>
               </div>
             </div>
           </div>
 
           {/* Right card: Ranking Last N Days */}
           <div className="col-12 col-md-6">
-            <div className="surface p-3" style={getRankCardStyle(rankLastN)}>
+            <div className={`surface`} style={getRankCardStyle(rankLastN)}>
               <div className="d-flex justify-content-between align-items-center">
-                <span className="text-light fw-semibold">{t("rankingLastD", { d: expiryDays })}</span>
-                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankLastN), color: '#111' }}>{rankLastN}</div>
+                <span className="fw-semibold fs-5" style={{ color: 'var(--light-gray)' }}>{t("rankingLastD", { d: expiryDays })}</span>
+                <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankLastN), color: rankLastN <= 3 ? '#111' : 'var(--deep-black)' }}>{rankLastN}</div>
               </div>
             </div>
           </div>
