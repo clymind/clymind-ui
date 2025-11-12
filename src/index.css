@@ -10,7 +10,7 @@
   --caoba-accent: #691630; /* dark refined bordeaux accent */
   --light-gray: #D8DEE6; /* refined light text */
   --secondary-text-darker: #B8C1C9; /* muted secondary on slate */
-  --warm-beige: #E9E6E1; /* soft greige surface */
+  --warm-beige: #dcd6d5; /* soft greige surface */
   --text-bright: #F3F6F8; /* crisp bright text for dark cards/rows */
   --card-padding: 1rem; /* unified internal padding */
   --card-gap: 1rem; /* unified external gap */
@@ -19,7 +19,7 @@
   --copper-green-soft: #2A3940;
   --copper-green-hover: #192228;
   --caoba-accent-hover: #822042; /* slightly brighter hover for contrast */
-  --beige-border: #D9D4CC;
+  --beige-border: #e9e6e11c;
   --beige-shadow: rgba(0,0,0,.35);
 
   /* Selection & interactions (replacing old select vars) */
@@ -131,7 +131,8 @@ body, body *{font-smooth:always; -webkit-font-smoothing:antialiased;}
 .input-group-text.bg-dark{ background: var(--warm-beige) !important; color: var(--deep-black) !important; border-color: var(--beige-border) !important; }
 .form-control.bg-dark{ background: var(--warm-beige) !important; color: var(--deep-black) !important; border-color: var(--beige-border) !important; }
 .form-control.bg-dark::placeholder{ color:#6b6b6b; }
-.form-control.bg-dark:focus{ outline:none; box-shadow:0 0 0 .25rem rgba(105,22,48,.35); border-color: var(--caoba-accent) !important; }
+.form-control.bg-dark:focus{ outline:none; box-shadow:none; border-color: var(--beige-border) !important; }
+.form-control.bg-dark:focus-visible{ outline:none; box-shadow:none; border-color: var(--beige-border) !important; }
 
 /* Header buttons (Home/Language) beige on green, hover accent */
 .navbar .btn-outline-light, .btn-outline-success{
