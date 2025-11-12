@@ -87,21 +87,21 @@ export const StartupCard = ({
 
   return (
     <button
-      className={`w-100 text-start p-4 startup-card ${
-        isZero ? "zero border-danger" : "surface"  // Zero-state styling
+      className={`w-100 text-center p-4 startup-card ${
+        isZero ? "zero border-danger" : ""  // Zero-state styling (no surface wrapper)
       } ${critical ? "pulse border-danger" : ""}`}  // Critical/at-risk styling with pulse animation
       onClick={onClick}
     >
       {/* Startup name with responsive font size */}
       <div
-        className="fw-bold text-white"
+        className="fw-bold text-center"
         style={{ fontSize: `${getFontSize(name)}px` }}
       >
         {name}
       </div>
 
       {/* Timer display: HH MM SS or 0 0 0 when inactive */}
-      <div className="d-flex align-items-end gap-1 flex-wrap mt-2 text-white timer-nowrap">
+      <div className="d-flex align-items-end justify-content-center gap-1 flex-wrap mt-2 timer-nowrap">
         {isZero ? (
           // Zero state: display 0 0 0
           <>

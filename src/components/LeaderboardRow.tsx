@@ -53,9 +53,8 @@ export const LeaderboardRow = ({
   // - Silver (#c0c0c0) for rank 2
   // - Bronze (#cd7f32) for rank 3
   // - Light gray for rank 4+
-  const bg = rank === 1 ? "#d4af37" : rank === 2 ? "#c0c0c0" : rank === 3 ? "#cd7f32" : "rgba(255,255,255,0.10)";
-  // Text color for rank badge: dark for metals (high contrast), light for others
-  const color = rank <= 3 ? "#111" : "#ddd";
+  const bg = rank === 1 ? "#d4af37" : rank === 2 ? "#c0c0c0" : rank === 3 ? "#cd7f32" : "var(--warm-beige)";
+  const color = rank <= 3 ? "#111" : "var(--deep-black)";
   // CSS classes: add .zero class if metric is zero (triggers zero-state styling in CSS)
   const rootClasses = `selectable-row d-flex justify-content-between align-items-center ${isZero ? 'zero' : ''}`;
 
@@ -77,15 +76,15 @@ export const LeaderboardRow = ({
       {/* Left side: rank badge + startup name */}
       <div className="d-flex align-items-center gap-3">
         <div
-          className="rounded-2 d-flex align-items-center justify-content-center"
-          style={{ width: 36, height: 36, background: bg, color }}
+          className="rank-badge d-flex align-items-center justify-content-center"
+          style={{ background: bg, color }}
         >
           {rank}
         </div>
-        <span className="fw-semibold text-light">{name}</span>
+        <span className="fw-semibold">{name}</span>
       </div>
       {/* Right side: metric value */}
-      <span className="text-light">{value}</span>
+      <span>{value}</span>
     </div>
   );
 };

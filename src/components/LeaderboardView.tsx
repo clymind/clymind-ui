@@ -116,7 +116,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
       {/* Toggle buttons: Last N days / Overall */}
       <div className="text-center mb-3">
         <div className="d-flex justify-content-center">
-          <div className="btn-group" role="group" aria-label={t("leaderboardMode")}>
+          <div className="btn-group leaderboard-toggle" role="group" aria-label={t("leaderboardMode")}>
             {/* Last N days button */}
             <button
               type="button"
@@ -143,8 +143,8 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
         </div>
       </div>
 
-      {/* Leaderboard rows with mean marker */}
-      <div className="d-flex flex-column gap-2">{renderedRows}</div>
+  {/* Leaderboard rows with mean marker */}
+  <div className="stack-gap">{renderedRows}</div>
     </>
   );
 };

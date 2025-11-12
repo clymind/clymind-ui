@@ -7,7 +7,7 @@ export const Tabs = ({ active, onChange }: { active: number; onChange: (i: numbe
   const labels = [t("tabRemaining"), t("tabLeaderboards")];
   return (
     <div className="mt-3">
-      <ul className="nav nav-pills bg-dark border border-secondary rounded-3 p-1">
+      <ul className="nav nav-pills tabs-wrapper nav-gap p-0 w-100">
         {labels.map((label, i) => (
           <li className="nav-item flex-fill text-center" key={label}>
             <button
