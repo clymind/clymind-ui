@@ -140,6 +140,9 @@ export default function StartupPage() {
         {/* Titolo e descrizione (stesse posizioni della Home) */}
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">{state.name}</h1>
+          <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
+            {t("startupPageDesc", { name: state.name })}
+          </p>
         </div>
 
         <InfoStrip expiryDays={expiryDays} lightFactor={lightFactor} dailyLightHours={dailyLightHours} />
