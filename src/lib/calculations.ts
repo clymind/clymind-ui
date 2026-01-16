@@ -36,7 +36,7 @@ import { formatHoursWithSuffix } from "./format";
  */
 export function getLeaderboardRows(
   startups: Startup[],
-  metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute",
+  metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute",
   options?: { displayMultiplier?: number }
 ): LeaderboardRow[] {
   // Sort in descending order by the specified metric
@@ -99,7 +99,7 @@ export function getLeaderboardRows(
  */
 export function computeMean(
   startups: Startup[],
-  metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute"
+  metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"
 ): number {
   if (!startups.length) return 0;
   const sum = startups.reduce((acc, s) => acc + s[metricKey], 0);
@@ -130,7 +130,7 @@ export function findMeanInsertPosition(
   leaderboardRows: LeaderboardRow[],
   startupsById: Map<string, Startup>,
   mean: number,
-  metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute"
+  metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"
 ): number {
   let boundaryIdx = -1;
   for (let i = 0; i < leaderboardRows.length; i++) {

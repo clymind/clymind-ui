@@ -108,7 +108,7 @@ export default function Home() {
       filterMode,
       passesFilter,
     },
-    "lastNDaysWorkHours"
+    "lastNDaysLightHours"
   );
 
   /**
@@ -122,7 +122,7 @@ export default function Home() {
       filterMode,
       passesFilter,
     },
-    "totalWorkHoursAbsolute"
+    "totalLightHoursAbsolute"
   );
 
   // ===== RENDER =====
@@ -188,7 +188,7 @@ export default function Home() {
                   : leaderboardTotal.meanInsertPos
               }
               startupsById={byId}
-              metricKey={leaderboardMode === "last" ? "lastNDaysWorkHours" : "totalWorkHoursAbsolute"}
+              metricKey={leaderboardMode === "last" ? "lastNDaysLightHours" : "totalLightHoursAbsolute"}
               onRowClick={(id) => navigate(`/startup/${id}`)}
             />
           )}

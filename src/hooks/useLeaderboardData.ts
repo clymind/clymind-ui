@@ -13,7 +13,7 @@
  * - Easier to maintain and modify
  *
  * @param props - Configuration object with data, query, filterMode, and filter function
- * @param metricKey - Which metric to rank by ("lastNDaysWorkHours" or "totalWorkHoursAbsolute")
+ * @param metricKey - Which metric to rank by ("lastNDaysLightHours" or "totalLightHoursAbsolute")
  * @returns Object containing fullRows, viewRows, mean, and meanInsertPos
  *
  * @example
@@ -24,14 +24,13 @@
  *     filterMode: "all",
  *     passesFilter: (s) => s.remainingLightSeconds > 0
  *   },
- *   "lastNDaysWorkHours"
+ *   "lastNDaysLightHours"
  * );
  * // Returns: { fullRows: [...], viewRows: [...], mean: 4.5, meanInsertPos: 3 }
  */
 
 import { useMemo } from "react";
 import { Startup, FilterMode, LeaderboardRow } from "../types";
-import { SETTINGS } from "../config/settings";
 import {
   getLeaderboardRows,
   computeMean,
@@ -88,7 +87,7 @@ interface LeaderboardData {
  */
 export function useLeaderboardData(
   props: UseLeaderboardDataProps,
-  metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute"
+  metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"
 ): LeaderboardData {
   const { data, query, filterMode, passesFilter } = props;
   const q = query.trim().toLowerCase();
@@ -103,7 +102,7 @@ export function useLeaderboardData(
   // Generate the full leaderboard (all startups, no filtering)
   // This is memoized to avoid recomputation unless data or metric changes
   const fullRows = useMemo(() => {
-    return getLeaderboardRows(data, metricKey, { displayMultiplier: SETTINGS.lightFactor });
+    return getLeaderboardRows(data, metricKey);
   }, [data, metricKey]);
 
   // Filter the full leaderboard based on query and filterMode

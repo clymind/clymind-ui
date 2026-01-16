@@ -3,8 +3,8 @@
  *
  * Features:
  * 1. Live countdown timer: Remaining light hours in real-time
- * 2. Work hours display: Accumulated work hours over last N days
- * 3. Light hours conversion: Work hours multiplied by lightFactor
+ * 2. Light hours display: Accumulated light hours over last N days (pre-multiplied)
+ * 3. Light hours totals shown directly (no on-the-fly conversion)
  * 4. Refresh button: Update data from the backend
  *
  * Layout:
@@ -20,7 +20,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { PageShell, Container, FloatingRefresh, InfoStrip } from "../components";
 import { formatNumber } from "../lib/format";
 import { SETTINGS, STARTUPS } from "../config/settings";
-import { getLeaderboardRows } from "../lib/calculations";
 import type { Startup } from "../types";
 import logo from "../assets/clymind-logo.png";
 import { useI18n } from "../i18n";
@@ -59,16 +58,16 @@ export default function StartupPage() {
     const t = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
     return () => clearInterval(t);
   }, []);
-  const workLastN = state.lastNDaysWorkHours;
+  const lightLastN = state.lastNDaysLightHours;
   const { expiryDays, lightFactor, dailyLightHours } = SETTINGS;
-  const totalLightLastN = workLastN * lightFactor;
+  const totalLightLastN = lightLastN;
 
-  // Calculate rankings for this startup by computing light hours on the fly
-  const getRankingByLightHours = (metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute"): number => {
-    // Create list of startups with their light hours
+  // Calculate rankings for this startup using stored light hours
+  const getRankingByLightHours = (metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"): number => {
+    // Create list of startups with their light hours (values already pre-multiplied)
     const startupsByLight = STARTUPS.map(s => ({
       id: s.id,
-      lightHours: s[metricKey] * lightFactor
+      lightHours: s[metricKey]
     }));
     
     // Sort descending and compute tie-aware ranks
@@ -107,13 +106,13 @@ export default function StartupPage() {
 
   // Calculate rankings for this startup
   const rankLastN = useMemo(
-    () => getRankingByLightHours("lastNDaysWorkHours"),
-    [id, lightFactor]
+    () => getRankingByLightHours("lastNDaysLightHours"),
+    [id]
   );
 
   const rankOverall = useMemo(
-    () => getRankingByLightHours("totalWorkHoursAbsolute"),
-    [id, lightFactor]
+    () => getRankingByLightHours("totalLightHoursAbsolute"),
+    [id]
   );
 
   // Helper function to get rank badge background color
@@ -167,7 +166,7 @@ export default function StartupPage() {
             <div className="col-12">
               <div className="row align-items-center text-center">
                 <div className="col-5">
-                  <div className="stat-number display-2 fw-bold">{formatNumber(workLastN)}</div>
+                  <div className="stat-number display-2 fw-bold">{formatNumber(lightLastN)}</div>
                   <div className="stat-label small opacity-75">{t("workHoursLastD", { d: expiryDays })}</div>
                 </div>
                 {/* Arrow indicator */}

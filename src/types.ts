@@ -17,15 +17,15 @@ export type FilterMode = "all" | "risk" | "inactive";
  * @property id - Unique identifier
  * @property name - Display name of the startup
  * @property remainingLightSeconds - Countdown timer in seconds for remaining light hours
- * @property lastNDaysWorkHours - Work hours accumulated in the last N days (expiryDays setting)
- * @property totalWorkHoursAbsolute - Total accumulated work hours across all time
+ * @property lastNDaysLightHours - Light hours accumulated in the last N days (already multiplied by lightFactor)
+ * @property totalLightHoursAbsolute - Total accumulated light hours across all time (already multiplied)
  */
 export type Startup = {
   id: string;
   name: string;
   remainingLightSeconds: number;
-  lastNDaysWorkHours: number;
-  totalWorkHoursAbsolute: number;
+  lastNDaysLightHours: number;
+  totalLightHoursAbsolute: number;
 };
 
 /**

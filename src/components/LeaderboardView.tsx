@@ -41,7 +41,7 @@ interface LeaderboardViewProps {
   /** Map of startup ID → Startup for zero-state detection */
   startupsById: Map<string, Startup>;
   /** Which metric is being displayed (for zero-state check) */
-  metricKey: "lastNDaysWorkHours" | "totalWorkHoursAbsolute";
+  metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute";
   /** Callback when a row is clicked (typically navigate to detail page) */
   onRowClick: (id: string) => void;
 }
@@ -57,7 +57,7 @@ interface LeaderboardViewProps {
  * @param props - Configuration and data
  *
  * @example
- * const leaderboard = useLeaderboardData({...}, "lastNDaysWorkHours");
+ * const leaderboard = useLeaderboardData({...}, "lastNDaysLightHours");
  * <LeaderboardView
  *   mode="last"
  *   onModeChange={setMode}
@@ -65,7 +65,7 @@ interface LeaderboardViewProps {
  *   mean={leaderboard.mean}
  *   meanInsertPos={leaderboard.meanInsertPos}
  *   startupsById={byId}
- *   metricKey="lastNDaysWorkHours"
+ *   metricKey="lastNDaysLightHours"
  *   onRowClick={(id) => navigate(`/startup/${id}`)}
  * />
  */
@@ -107,7 +107,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
     0,
     <MeanBlock
       key={`mean-${mode}`}
-      value={formatHoursWithSuffix(mean * SETTINGS.lightFactor)}
+      value={formatHoursWithSuffix(mean)}
     />
   );
 

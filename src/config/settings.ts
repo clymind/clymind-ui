@@ -34,8 +34,8 @@ export const SETTINGS = {
  *
  * Data distribution:
  * - remainingLightSeconds: 0 to 120+ hours (simulating various depletion rates)
- * - lastNDaysWorkHours: 0 to 8 hours (last N days activity)
- * - totalWorkHoursAbsolute: 0 to 120 hours (all-time accumulation)
+ * - lastNDaysLightHours: 0 to 200+ light hours (already multiplied by lightFactor)
+ * - totalLightHoursAbsolute: 0 to 2400+ light hours (all-time accumulation, already multiplied)
  *
  * Some startups have 0 remaining light (inactive state) to demonstrate
  * zero-state styling in the UI.
@@ -49,25 +49,21 @@ export const SETTINGS = {
  * ```
  */
 export const STARTUPS: Startup[] = [
-  { id: "1",  name: "Aether Labs",    remainingLightSeconds:  8.02 * 3600,  lastNDaysWorkHours: 4.25, totalWorkHoursAbsolute: 72.0 },
-  { id: "2",  name: "Bloomlytics",    remainingLightSeconds: 45.43 * 3600,  lastNDaysWorkHours: 3.0, totalWorkHoursAbsolute: 46.5 },
-  { id: "3",  name: "Cobalt AI",      remainingLightSeconds: 72.02 * 3600,  lastNDaysWorkHours: 6.0, totalWorkHoursAbsolute: 88.25 },
-  { id: "4",  name: "Dawn Robotics",  remainingLightSeconds: 31.55 * 3600,  lastNDaysWorkHours: 2.5, totalWorkHoursAbsolute: 34.0 },
-  { id: "5",  name: "EcoSense",       remainingLightSeconds:  6.5*3600,  lastNDaysWorkHours: 6.5, totalWorkHoursAbsolute: 20.25 },
-  { id: "6",  name: "FluxGarden",     remainingLightSeconds:120.5 * 3600,  lastNDaysWorkHours: 1.25, totalWorkHoursAbsolute: 15.0 },
-  { id: "7",  name: "GreenPulse",     remainingLightSeconds: 8.75 * 3600,  lastNDaysWorkHours: 4.75, totalWorkHoursAbsolute: 64.0 },
-  { id: "8",  name: "EcoHub laboratory base",     remainingLightSeconds: 90.32 * 3600,  lastNDaysWorkHours: 7.0, totalWorkHoursAbsolute: 95.5 },
-  { id: "9",  name: "ZeroTech",       remainingLightSeconds: 0,          lastNDaysWorkHours: 0.5, totalWorkHoursAbsolute: 5.5 },
-  { id: "10", name: "LumenLess",      remainingLightSeconds: 0,          lastNDaysWorkHours: 0, totalWorkHoursAbsolute: 2.0 },
-  { id: "11", name: "NovaNexus",      remainingLightSeconds:15.5 * 3600,  lastNDaysWorkHours: 7.0, totalWorkHoursAbsolute: 58.0 },
-  { id: "12", name: "OptiWave",       remainingLightSeconds:55.3 * 3600,  lastNDaysWorkHours: 5.25, totalWorkHoursAbsolute: 80.0 },
-  { id: "13", name: "GreenPulseTech AI",     remainingLightSeconds:8.43 * 3600,  lastNDaysWorkHours: 2.75, totalWorkHoursAbsolute: 38.0 },
-  { id: "14", name: "QuantumQuotient", remainingLightSeconds:5.2 * 3600, lastNDaysWorkHours: 4.5, totalWorkHoursAbsolute: 67.5 },
-  { id: "15", name: "RadiantRise",   remainingLightSeconds:0,          lastNDaysWorkHours: 2.0, totalWorkHoursAbsolute: 22.0 },
-  { id: "16", name: "Solaris Solutions", remainingLightSeconds:70.5 * 3600, lastNDaysWorkHours: 6.0, totalWorkHoursAbsolute: 88.5 },
-  { id: "17", name: "TerraVision",      remainingLightSeconds:42.8 * 3600,  lastNDaysWorkHours: 3.25, totalWorkHoursAbsolute: 50.5 },
-  { id: "18", name: "UrbanAI",         remainingLightSeconds:11.1 * 3600,  lastNDaysWorkHours: 4.0, totalWorkHoursAbsolute: 60.75 },
-  { id: "19", name: "VortexFlow",      remainingLightSeconds:63.4 * 3600,  lastNDaysWorkHours: 2.25, totalWorkHoursAbsolute: 33.25 },
-  { id: "20", name: "WaveSync",        remainingLightSeconds:0,             lastNDaysWorkHours: 0, totalWorkHoursAbsolute: 0},
+  { id: "1",  name: "Aether Labs",    remainingLightSeconds:  8.02 * 3600,  lastNDaysLightHours: 106.25, totalLightHoursAbsolute: 1800 },
+  { id: "2",  name: "Bloomlytics",    remainingLightSeconds: 45.43 * 3600,  lastNDaysLightHours: 75, totalLightHoursAbsolute: 1162.5 },
+  { id: "3",  name: "Cobalt AI",      remainingLightSeconds: 72.02 * 3600,  lastNDaysLightHours: 150, totalLightHoursAbsolute: 2206.25 },
+  { id: "4",  name: "Dawn Robotics",  remainingLightSeconds: 31.55 * 3600,  lastNDaysLightHours: 62.5, totalLightHoursAbsolute: 850 },
+  { id: "5",  name: "EcoSense",       remainingLightSeconds:  6.5*3600,  lastNDaysLightHours: 162.5, totalLightHoursAbsolute: 506.25 },
+  { id: "6",  name: "FluxGarden",     remainingLightSeconds:120.5 * 3600,  lastNDaysLightHours: 31.25, totalLightHoursAbsolute: 375 },
+  { id: "7",  name: "GreenPulse",     remainingLightSeconds: 8.75 * 3600,  lastNDaysLightHours: 118.75, totalLightHoursAbsolute: 1600 },
+  { id: "8",  name: "EcoHub laboratory base",     remainingLightSeconds: 90.32 * 3600,  lastNDaysLightHours: 175, totalLightHoursAbsolute: 2387.5 },
+  { id: "9",  name: "ZeroTech",       remainingLightSeconds: 0,          lastNDaysLightHours: 12.5, totalLightHoursAbsolute: 137.5 },
+  { id: "10", name: "LumenLess",      remainingLightSeconds: 0,          lastNDaysLightHours: 0, totalLightHoursAbsolute: 50 },
+  { id: "11", name: "NovaNexus",      remainingLightSeconds:15.5 * 3600,  lastNDaysLightHours: 175, totalLightHoursAbsolute: 1450 },
+  { id: "12", name: "OptiWave",       remainingLightSeconds:55.3 * 3600,  lastNDaysLightHours: 131.25, totalLightHoursAbsolute: 2000 },
+  { id: "13", name: "GreenPulseTech AI",     remainingLightSeconds:8.43 * 3600,  lastNDaysLightHours: 68.75, totalLightHoursAbsolute: 950 },
+  { id: "14", name: "QuantumQuotient", remainingLightSeconds:5.2 * 3600, lastNDaysLightHours: 112.5, totalLightHoursAbsolute: 1687.5 },
+  { id: "15", name: "RadiantRise",   remainingLightSeconds:0,          lastNDaysLightHours: 50, totalLightHoursAbsolute: 550 },
+  { id: "16", name: "Solaris Solutions", remainingLightSeconds:70.5 * 3600, lastNDaysLightHours: 150, totalLightHoursAbsolute: 2212.5 },
+  { id: "17", name: "TerraVision",      remainingLightSeconds:42.8 * 3600,  lastNDaysLightHours: 81.25, totalLightHoursAbsolute: 1262.5 },
 ];
-
