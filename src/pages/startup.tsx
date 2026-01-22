@@ -16,27 +16,98 @@
  */
 
 import React, { useMemo, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { PageShell, Container, FloatingRefresh, InfoStrip } from "../components";
 import { formatNumber } from "../lib/format";
-import { SETTINGS, STARTUPS } from "../config/settings";
+import { useDashboard } from "../hooks/useDashboard";
 import type { Startup } from "../types";
 import logo from "../assets/clymind-logo.png";
 import { useI18n } from "../i18n";
 
 export default function StartupPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const { t } = useI18n();
 
-  const initial = useMemo<Startup | undefined>(
+  // Fetch data from backend
+  const { startups: STARTUPS, config: SETTINGS, loading } = useDashboard();
+
+  // Find the current startup
+  const state = useMemo<Startup | undefined>(
     () => STARTUPS.find(s => s.id === id),
-    [id]
+    [STARTUPS, id]
   );
 
-  const [state, setState] = useState<Startup | undefined>(initial);
+  // Live countdown in seconds - ALL hooks must be before conditional returns
+  const [seconds, setSeconds] = useState<number>(0);
 
+  useEffect(() => {
+    if (state) {
+      setSeconds(Math.max(0, state.remainingLightSeconds));
+    }
+  }, [state?.remainingLightSeconds]);
+
+  useEffect(() => {
+    const timer = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Calculate rankings - must be before conditional returns
+  const getRankingByLightHours = (metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"): number => {
+    const startupsByLight = STARTUPS.map(s => ({
+      id: s.id,
+      lightHours: s[metricKey]
+    }));
+
+    const sorted = [...startupsByLight].sort((a, b) => b.lightHours - a.lightHours);
+
+    let prevValue: number | null = null;
+    let prevRank = 0;
+    let itemsWithPrevRank = 0;
+
+    for (let i = 0; i < sorted.length; i++) {
+      const s = sorted[i];
+      const val = s.lightHours;
+      let rank: number;
+
+      if (prevValue === null) {
+        rank = 1;
+        itemsWithPrevRank = 1;
+      } else if (val === prevValue) {
+        rank = prevRank;
+        itemsWithPrevRank++;
+      } else {
+        rank = prevRank + itemsWithPrevRank;
+        itemsWithPrevRank = 1;
+      }
+
+      if (s.id === id) {
+        return rank;
+      }
+
+      prevValue = val;
+      prevRank = rank;
+    }
+
+    return 0;
+  };
+
+  const rankLastN = useMemo(
+    () => getRankingByLightHours("lastNDaysLightHours"),
+    [id, STARTUPS]
+  );
+
+  const rankOverall = useMemo(
+    () => getRankingByLightHours("totalLightHoursAbsolute"),
+    [id, STARTUPS]
+  );
+
+  // While loading, show nothing (avoids flash)
+  if (loading && !state) {
+    return null;
+  }
+
+  // Show "not found" only after loading is done and startup doesn't exist
   if (!state) {
-    const { t } = useI18n();
     return (
       <PageShell logoSrc={logo}>
         <Container className="py-4 text-center">
@@ -49,105 +120,39 @@ export default function StartupPage() {
     );
   }
 
-  // live countdown in seconds for the remaining light (keeps in sync with state.remainingLightSeconds)
-  const [seconds, setSeconds] = useState<number>(Math.max(0, state.remainingLightSeconds));
-
-  useEffect(() => setSeconds(Math.max(0, state.remainingLightSeconds)), [state?.remainingLightSeconds]);
-
-  useEffect(() => {
-    const t = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, []);
+  // Derived values (safe to use after conditional returns since they don't use hooks)
   const lightLastN = state.lastNDaysLightHours;
-  const { expiryDays, lightFactor, dailyLightHours } = SETTINGS;
+  const expiryDays = SETTINGS?.expiryDays || 14;
+  const lightFactor = SETTINGS?.lightFactor || 25;
+  const dailyLightHours = SETTINGS?.dailyLightHours || 10;
   const totalLightLastN = lightLastN;
 
-  // Calculate rankings for this startup using stored light hours
-  const getRankingByLightHours = (metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"): number => {
-    // Create list of startups with their light hours (values already pre-multiplied)
-    const startupsByLight = STARTUPS.map(s => ({
-      id: s.id,
-      lightHours: s[metricKey]
-    }));
-    
-    // Sort descending and compute tie-aware ranks
-    const sorted = [...startupsByLight].sort((a, b) => b.lightHours - a.lightHours);
-    
-    let prevValue: number | null = null;
-    let prevRank = 0;
-    let itemsWithPrevRank = 0;
-    
-    for (let i = 0; i < sorted.length; i++) {
-      const s = sorted[i];
-      const val = s.lightHours;
-      let rank: number;
-      
-      if (prevValue === null) {
-        rank = 1;
-        itemsWithPrevRank = 1;
-      } else if (val === prevValue) {
-        rank = prevRank;
-        itemsWithPrevRank++;
-      } else {
-        rank = prevRank + itemsWithPrevRank;
-        itemsWithPrevRank = 1;
-      }
-      
-      if (s.id === id) {
-        return rank;
-      }
-      
-      prevValue = val;
-      prevRank = rank;
-    }
-    
-    return 0; // Not found
-  };
-
-  // Calculate rankings for this startup
-  const rankLastN = useMemo(
-    () => getRankingByLightHours("lastNDaysLightHours"),
-    [id]
-  );
-
-  const rankOverall = useMemo(
-    () => getRankingByLightHours("totalLightHoursAbsolute"),
-    [id]
-  );
-
-  // Helper function to get rank badge background color
   const getRankColor = (rank: number): string => {
-    if (rank === 1) return "#d4af37"; // Gold
-    if (rank === 2) return "#c0c0c0"; // Silver
-    if (rank === 3) return "#cd7f32"; // Bronze
-    return "var(--warm-beige)"; // Soft background for 4+
+    if (rank === 1) return "#d4af37";
+    if (rank === 2) return "#c0c0c0";
+    if (rank === 3) return "#cd7f32";
+    return "var(--warm-beige)";
   };
 
-  // Background style: keep tinted background only for podium.
-  // For non-podium (rank > 3) we return undefined so the default .surface dark background is used.
   const getRankCardStyle = (rank: number): React.CSSProperties | undefined => {
     if (rank === 1) return { backgroundColor: `${getRankColor(rank)}20` };
-    if (rank === 2) return { backgroundColor: `${getRankColor(rank)}20` }; // unchanged silver tint
+    if (rank === 2) return { backgroundColor: `${getRankColor(rank)}20` };
     if (rank === 3) return { backgroundColor: `${getRankColor(rank)}20` };
-    return undefined; // darker default
+    return undefined;
   };
 
-  const { t } = useI18n();
   return (
     <PageShell logoSrc={logo}>
       <Container className="py-4">
-        {/* Titolo e descrizione (stesse posizioni della Home) */}
         <div className="text-center mb-2">
           <h1 className="display-6 fw-bold mt-2">{state.name}</h1>
           <p className="text-secondary small mx-auto" style={{ maxWidth: "560px" }}>
-            {/* Keep name untranslated */}
             {t("startupDetailDesc", { name: state.name, d: expiryDays })}
           </p>
         </div>
 
         <InfoStrip expiryDays={expiryDays} lightFactor={lightFactor} dailyLightHours={dailyLightHours} />
 
-        {/* Remaining light on top (larger), then total light hours for the last N days, then Refresh */}
         <div className="surface p-3 mt-3">
           <div className="row g-3 text-center">
             <div className="col-12">
@@ -162,14 +167,12 @@ export default function StartupPage() {
               <div className="stat-label small opacity-75">{t("remainingLight")}</div>
             </div>
 
-            {/* Row with work hours -> arrow -> total light hours */}
             <div className="col-12">
               <div className="row align-items-center text-center">
                 <div className="col-5">
                   <div className="stat-number display-2 fw-bold">{formatNumber(lightLastN)}</div>
                   <div className="stat-label small opacity-75">{t("workHoursLastD", { d: expiryDays })}</div>
                 </div>
-                {/* Arrow indicator */}
                 <div className="col-2">
                   <div className="display-4 fw-bold">→</div>
                 </div>
@@ -181,28 +184,14 @@ export default function StartupPage() {
             </div>
           </div>
 
-          {/* Refresh button below the stats — same design/behavior as other refresh controls */}
           <div className="d-flex justify-content-center mt-4">
-            <FloatingRefresh onClick={() => {
-              try {
-                // simulate data refresh by updating state from STARTUPS (in real app, would fetch updated data)
-                const updated = STARTUPS.find(s => s.id === id);
-                if (updated) {
-                  setState(updated);
-                  window.location.reload();
-                }
-              } catch (e) {
-                /* ignore errors from caller */
-              }
-            }} />   
+            <FloatingRefresh />
           </div>
         </div>
 
-  {/* Ranking cards below main card */}
-  <div className="row cards-row mt-3">
-          {/* Left card: Ranking Overall */}
+        <div className="row cards-row mt-3">
           <div className="col-12 col-md-6">
-            <div className={`surface`} style={getRankCardStyle(rankOverall)}>
+            <div className="surface" style={getRankCardStyle(rankOverall)}>
               <div className="d-flex justify-content-between align-items-center">
                 <span className="fw-semibold fs-5" style={{ color: 'var(--light-gray)' }}>{t("rankingOverall")}</span>
                 <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankOverall), color: rankOverall <= 3 ? '#111' : 'var(--deep-black)' }}>{rankOverall}</div>
@@ -210,9 +199,8 @@ export default function StartupPage() {
             </div>
           </div>
 
-          {/* Right card: Ranking Last N Days */}
           <div className="col-12 col-md-6">
-            <div className={`surface`} style={getRankCardStyle(rankLastN)}>
+            <div className="surface" style={getRankCardStyle(rankLastN)}>
               <div className="d-flex justify-content-between align-items-center">
                 <span className="fw-semibold fs-5" style={{ color: 'var(--light-gray)' }}>{t("rankingLastD", { d: expiryDays })}</span>
                 <div className="rank-badge d-flex align-items-center justify-content-center" style={{ background: getRankColor(rankLastN), color: rankLastN <= 3 ? '#111' : 'var(--deep-black)' }}>{rankLastN}</div>

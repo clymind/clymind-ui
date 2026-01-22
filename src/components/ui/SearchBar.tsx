@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-import { SETTINGS } from "../../config/settings";
 import { FloatingRefresh } from "./FloatingRefresh";
 import type { FilterMode } from "../../types";
 import { useI18n } from "../../i18n";
@@ -7,15 +6,15 @@ import { useI18n } from "../../i18n";
 export const SearchBar = ({
   query,
   onChange,
-  onRefresh,
   filterMode,
   onFilterChange,
+  dailyLightHours = 10,
 }: {
   query: string;
   onChange: (v: string) => void;
-  onRefresh: () => void;
   filterMode: FilterMode;
   onFilterChange: (v: FilterMode) => void;
+  dailyLightHours?: number;
 }) => {
   const dropdownMenuRef = useRef<HTMLUListElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -39,7 +38,7 @@ export const SearchBar = ({
     <form className="mt-3" role="search" onSubmit={(e) => e.preventDefault()}>
       <div className="row g-2 align-items-stretch">
         <div className="col-auto">
-          <FloatingRefresh onClick={onRefresh} />
+          <FloatingRefresh />
         </div>
         <div className="col">
           <div className="input-group input-group-lg">
@@ -123,7 +122,7 @@ export const SearchBar = ({
                 }`}
                 onClick={() => onFilterChange("risk")}
               >
-                {t("showRisk", { h: SETTINGS.dailyLightHours })}
+                {t("showRisk", { h: dailyLightHours })}
               </button>
             </li>
             <li>

@@ -2,22 +2,16 @@ import React from "react";
 import { useI18n } from "../../i18n";
 
 /**
- * FloatingRefresh button: reloads page or triggers custom callback
- * Defaults to window.location.reload() if no onClick provided
+ * FloatingRefresh button: reloads page
  */
-export const FloatingRefresh = ({ onClick }: { onClick?: () => void }) => {
+export const FloatingRefresh = () => {
   const { t } = useI18n();
+
   return (
     <button
       type="button"
       className="btn btn-outline-success h-100 px-3"
-      onClick={() => {
-        try {
-          (onClick || (() => window.location.reload()))();
-        } catch (e) {
-          /* ignore errors from caller */
-        }
-      }}
+      onClick={() => window.location.reload()}
       aria-label={t("refreshResults")}
       title={t("refresh")}
     >
