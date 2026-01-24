@@ -57,24 +57,31 @@ export const StartupCard = ({
   remainingLightSeconds,
   criticalSeconds,
   onClick,
+  inConsumptionWindow = false,
 }: {
   name: string;
   remainingLightSeconds: number;
   criticalSeconds: number;
   onClick?: () => void;
+  inConsumptionWindow?: boolean;
 }) => {
   // State for the live countdown timer
   const [seconds, setSeconds] = useState(remainingLightSeconds);
 
-  // Sync timer state when prop changes (e.g., after data refresh)
-  useEffect(() => setSeconds(remainingLightSeconds), [remainingLightSeconds]);
-
-  // Set up interval to decrement timer every second
-  // Clean up interval on component unmount
+  // Always sync with backend value
   useEffect(() => {
-    const t = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000);
+    setSeconds(remainingLightSeconds);
+  }, [remainingLightSeconds]);
+
+  // Decrement locally for visual smoothness (only when in consumption window)
+  useEffect(() => {
+    if (!inConsumptionWindow) return;
+
+    const t = setInterval(() => {
+      setSeconds((s) => Math.max(0, s - 1));
+    }, 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [inConsumptionWindow]);
 
   // Determine state based on remaining seconds
   const isZero = seconds <= 0;  // Inactive: no light remaining

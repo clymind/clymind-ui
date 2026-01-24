@@ -29,7 +29,7 @@ export default function StartupPage() {
   const { t } = useI18n();
 
   // Fetch data from backend
-  const { startups: STARTUPS, config: SETTINGS, loading } = useDashboard();
+  const { startups: STARTUPS, config: SETTINGS, loading, triggerRefresh } = useDashboard();
 
   // Find the current startup
   const state = useMemo<Startup | undefined>(
@@ -46,10 +46,15 @@ export default function StartupPage() {
     }
   }, [state?.remainingLightSeconds]);
 
+  // Only decrement timer if we're in the consumption window (from backend)
+  const inConsumptionWindow = SETTINGS?.inConsumptionWindow ?? false;
+
   useEffect(() => {
+    if (!inConsumptionWindow) return;
+
     const timer = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [inConsumptionWindow]);
 
   // Calculate rankings - must be before conditional returns
   const getRankingByLightHours = (metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute"): number => {
@@ -123,6 +128,7 @@ export default function StartupPage() {
   // Derived values (safe to use after conditional returns since they don't use hooks)
   const lightLastN = state.lastNDaysLightHours;
   const expiryDays = SETTINGS?.expiryDays || 14;
+  //const expiryDays = Math.round(expiryDays);
   const lightFactor = SETTINGS?.lightFactor || 25;
   const dailyLightHours = SETTINGS?.dailyLightHours || 10;
   const totalLightLastN = lightLastN;
@@ -185,7 +191,7 @@ export default function StartupPage() {
           </div>
 
           <div className="d-flex justify-content-center mt-4">
-            <FloatingRefresh />
+            <FloatingRefresh onRefresh={triggerRefresh} />
           </div>
         </div>
 

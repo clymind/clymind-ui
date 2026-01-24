@@ -9,12 +9,14 @@ export const SearchBar = ({
   filterMode,
   onFilterChange,
   dailyLightHours = 10,
+  onRefresh,
 }: {
   query: string;
   onChange: (v: string) => void;
   filterMode: FilterMode;
   onFilterChange: (v: FilterMode) => void;
   dailyLightHours?: number;
+  onRefresh?: () => void;
 }) => {
   const dropdownMenuRef = useRef<HTMLUListElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +40,7 @@ export const SearchBar = ({
     <form className="mt-3" role="search" onSubmit={(e) => e.preventDefault()}>
       <div className="row g-2 align-items-stretch">
         <div className="col-auto">
-          <FloatingRefresh />
+          <FloatingRefresh onRefresh={onRefresh} />
         </div>
         <div className="col">
           <div className="input-group input-group-lg">

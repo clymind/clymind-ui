@@ -19,6 +19,8 @@ interface BackendDashboardResponse {
   lightFactor: number;
   packageExpiryDays: number;
   dailyConsumptionHours: number;
+  consumptionStartTime: string; // "HH:mm"
+  inConsumptionWindow: boolean;
 }
 
 /** Frontend format */
@@ -26,6 +28,8 @@ export interface DashboardConfig {
   expiryDays: number;
   lightFactor: number;
   dailyLightHours: number;
+  consumptionStartTime: string; // "HH:mm"
+  inConsumptionWindow: boolean;
 }
 
 export interface DashboardData {
@@ -58,6 +62,39 @@ export async function fetchDashboard(): Promise<DashboardData> {
       expiryDays: data.packageExpiryDays,
       lightFactor: data.lightFactor,
       dailyLightHours: data.dailyConsumptionHours,
+      consumptionStartTime: data.consumptionStartTime,
+      inConsumptionWindow: data.inConsumptionWindow,
+    },
+  };
+}
+
+/**
+ * Trigger refresh and then fetch dashboard data
+ */
+export async function refreshAndFetchDashboard(): Promise<DashboardData> {
+  const response = await fetch(`${API_CONFIG.DASHBOARD_URL}/api/refreshAndGetDashboard`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to refresh dashboard: ${response.status}`);
+  }
+
+  const data: BackendDashboardResponse = await response.json();
+
+  // Map backend field names to frontend field names
+  return {
+    startups: data.startups.map((s) => ({
+      id: s.id,
+      name: s.name,
+      remainingLightSeconds: s.remainingLightSeconds,
+      lastNDaysLightHours: s.recentAccumulatedHours,
+      totalLightHoursAbsolute: s.totalAccumulatedHours,
+    })),
+    config: {
+      expiryDays: data.packageExpiryDays,
+      lightFactor: data.lightFactor,
+      dailyLightHours: data.dailyConsumptionHours,
+      consumptionStartTime: data.consumptionStartTime,
+      inConsumptionWindow: data.inConsumptionWindow,
     },
   };
 }

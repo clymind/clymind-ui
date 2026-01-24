@@ -58,7 +58,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   // ===== DATA FROM BACKEND =====
-  const { startups: STARTUPS, config: SETTINGS } = useDashboard(30000);
+  const { startups: STARTUPS, config: SETTINGS, triggerRefresh } = useDashboard(60000);
 
   // ===== COMPUTED VALUES =====
   const q = query.trim().toLowerCase();
@@ -155,6 +155,7 @@ export default function Home() {
             filterMode={filterMode}
             onFilterChange={setFilterMode}
             dailyLightHours={SETTINGS?.dailyLightHours || 10}
+            onRefresh={triggerRefresh}
           />
           <Tabs active={activeTab} onChange={(i) => setActiveTab(i as 0 | 1)} />
         </div>
@@ -171,6 +172,7 @@ export default function Home() {
                     remainingLightSeconds={s.remainingLightSeconds}
                     criticalSeconds={criticalSeconds}
                     onClick={() => navigate(`/startup/${s.id}`)}
+                    inConsumptionWindow={SETTINGS?.inConsumptionWindow ?? false}
                   />
                 </div>
               ))}
@@ -193,6 +195,7 @@ export default function Home() {
               startupsById={byId}
               metricKey={leaderboardMode === "last" ? "lastNDaysLightHours" : "totalLightHoursAbsolute"}
               onRowClick={(id) => navigate(`/startup/${id}`)}
+              expiryDays={SETTINGS?.expiryDays || 14}
             />
           )}
         </div>
