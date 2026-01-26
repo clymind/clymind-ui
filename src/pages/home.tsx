@@ -28,10 +28,10 @@ import {
   StartupCard,
   LeaderboardView,
 } from "../components";
-import { SETTINGS, STARTUPS } from "../config/settings";
 import type { FilterMode } from "../types";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "../hooks/useLeaderboardData";
+import { useDashboard } from "../hooks/useDashboard";
 import logo from "../assets/clymind-logo.png";
 import { useI18n } from "../i18n";
 
@@ -56,6 +56,9 @@ export default function Home() {
   const [leaderboardMode, setLeaderboardMode] = useState<"last" | "overall">("last");
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
   const navigate = useNavigate();
+
+  // ===== DATA FROM BACKEND =====
+  const { startups: STARTUPS, config: SETTINGS, triggerRefresh } = useDashboard(60000);
 
   // ===== COMPUTED VALUES =====
   const q = query.trim().toLowerCase();
@@ -84,17 +87,17 @@ export default function Home() {
     const byName = q ? STARTUPS.filter((s) => s.name.toLowerCase().startsWith(q)) : STARTUPS.slice();
     const byFilter = byName.filter(passesFilter);
     return byFilter.sort((a, b) => a.name.localeCompare(b.name));
-  }, [q, filterMode]);
+  }, [q, filterMode, STARTUPS]);
 
   // Threshold for "at-risk" warning (red pulse effect)
-  const criticalSeconds = SETTINGS.dailyLightHours * 3600;
+  const criticalSeconds = (SETTINGS?.dailyLightHours || 10) * 3600;
 
   // Map for O(1) startup lookups by ID (used for leaderboard zero-state detection)
   const byId = useMemo(() => {
     const map = new Map();
     STARTUPS.forEach((s) => map.set(s.id, s));
     return map;
-  }, []);
+  }, [STARTUPS]);
 
   // ===== LEADERBOARD DATA =====
   /**
@@ -139,9 +142,9 @@ export default function Home() {
 
         {/* Global settings info strip */}
         <InfoStrip
-          expiryDays={SETTINGS.expiryDays}
-          lightFactor={SETTINGS.lightFactor}
-          dailyLightHours={SETTINGS.dailyLightHours}
+          expiryDays={SETTINGS?.expiryDays || 14}
+          lightFactor={SETTINGS?.lightFactor || 25}
+          dailyLightHours={SETTINGS?.dailyLightHours || 10}
         />
 
         {/* Search, filter, and tab controls */}
@@ -149,9 +152,10 @@ export default function Home() {
           <SearchBar
             query={query}
             onChange={setQuery}
-            onRefresh={() => window.location.reload()}
             filterMode={filterMode}
             onFilterChange={setFilterMode}
+            dailyLightHours={SETTINGS?.dailyLightHours || 10}
+            onRefresh={triggerRefresh}
           />
           <Tabs active={activeTab} onChange={(i) => setActiveTab(i as 0 | 1)} />
         </div>
@@ -168,6 +172,7 @@ export default function Home() {
                     remainingLightSeconds={s.remainingLightSeconds}
                     criticalSeconds={criticalSeconds}
                     onClick={() => navigate(`/startup/${s.id}`)}
+                    inConsumptionWindow={SETTINGS?.inConsumptionWindow ?? false}
                   />
                 </div>
               ))}
@@ -190,6 +195,7 @@ export default function Home() {
               startupsById={byId}
               metricKey={leaderboardMode === "last" ? "lastNDaysLightHours" : "totalLightHoursAbsolute"}
               onRowClick={(id) => navigate(`/startup/${id}`)}
+              expiryDays={SETTINGS?.expiryDays || 14}
             />
           )}
         </div>

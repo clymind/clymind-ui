@@ -20,7 +20,6 @@
 import React from "react";
 import { LeaderboardRow, MeanBlock } from "../components";
 import { formatHoursWithSuffix } from "../lib/format";
-import { SETTINGS } from "../config/settings";
 import { Startup, LeaderboardRow as LeaderboardRowType } from "../types";
 import { useI18n } from "../i18n";
 
@@ -44,6 +43,8 @@ interface LeaderboardViewProps {
   metricKey: "lastNDaysLightHours" | "totalLightHoursAbsolute";
   /** Callback when a row is clicked (typically navigate to detail page) */
   onRowClick: (id: string) => void;
+  /** Number of days for "Last N days" display (from backend config) */
+  expiryDays: number;
 }
 
 /**
@@ -78,6 +79,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
   startupsById,
   metricKey,
   onRowClick,
+  expiryDays,
 }) => {
   const { t } = useI18n();
   // Build the rendered leaderboard by:
@@ -126,7 +128,7 @@ export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
               onClick={() => onModeChange("last")}
               style={{ minWidth: 160 }}
             >
-              {t("lastNDays", { d: SETTINGS.expiryDays })}
+              {t("lastNDays", { d: Math.round(expiryDays) })}
             </button>
             {/* Overall button */}
             <button
