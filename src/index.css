@@ -1,0 +1,239 @@
+.pulse{animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(220,53,69,.5)}70%{box-shadow:0 0 0 18px rgba(220,53,69,0)}100%{box-shadow:0 0 0 0 rgba(220,53,69,0)}}
+.timer{font-variant-numeric:tabular-nums}
+.timer-nowrap{white-space:nowrap}
+
+:root{
+  /* New palette */
+  --deep-black: #0B0F14; /* elegant deep ink */
+  --copper-green: #1F2A30; /* slate main surface */
+  --caoba-accent: #691630; /* dark refined bordeaux accent */
+  --light-gray: #D8DEE6; /* refined light text */
+  --secondary-text-darker: #B8C1C9; /* muted secondary on slate */
+  --warm-beige: #dcd6d5; /* soft greige surface */
+  --text-bright: #F3F6F8; /* crisp bright text for dark cards/rows */
+  --card-padding: 1rem; /* unified internal padding */
+  --card-gap: 1rem; /* unified external gap */
+
+  /* Derived tones */
+  --copper-green-soft: #2A3940;
+  --copper-green-hover: #192228;
+  --caoba-accent-hover: #822042; /* slightly brighter hover for contrast */
+  --beige-border: #e9e6e11c;
+  --beige-shadow: rgba(0,0,0,.35);
+
+  /* Selection & interactions (replacing old select vars) */
+  --select-bg: var(--copper-green);
+  --select-bg-soft: var(--copper-green-soft);
+  --select-bg-hover: var(--copper-green-hover);
+
+  /* Danger retains original hue but softened for dark base */
+  --danger-veil: rgba(220,53,69,.18);
+  --danger-veil-hover: rgba(220,53,69,.26);
+  --danger-border: rgba(220,53,69,.45);
+}
+
+/* Global base */
+body{background:var(--deep-black); color:var(--light-gray);}
+body, body *{font-smooth:always; -webkit-font-smoothing:antialiased;}
+
+/* Navbar/PageShell on main surface */
+.navbar.navbar-dark.bg-dark{ background: var(--copper-green) !important; color: var(--light-gray) !important; border-color: rgba(255,255,255,.12) !important; }
+.navbar .navbar-brand, .navbar .text-light{ color: var(--light-gray) !important; }
+.bg-dark{ background-color: var(--deep-black) !important; }
+
+.surface{
+  background: linear-gradient(165deg, var(--copper-green) 0%, var(--copper-green-hover) 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 1rem;
+  box-shadow: 0 4px 18px rgba(0,0,0,.5);
+  color:#fff;
+  padding: var(--card-padding);
+}
+.surface-soft{
+  background: var(--warm-beige);
+  border: 1px solid var(--beige-border);
+  border-radius: .9rem;
+  box-shadow: 0 2px 8px var(--beige-shadow);
+  color:#1a1d18;
+  padding: var(--card-padding);
+}
+
+/* Tabs attiva/hover */
+/* Tabs: soft surface default, active accent, hover accent-hover */
+.tabs-wrapper{ background: linear-gradient(165deg, var(--copper-green) 0%, var(--copper-green-hover) 100%); border:1px solid var(--copper-green); border-radius:1rem; color: var(--text-bright); padding:0; }
+.nav.nav-pills.nav-gap{ gap:.5rem; }
+.nav-pills .nav-link{ background: var(--warm-beige); color: var(--deep-black); border:1px solid var(--beige-border); }
+.nav-pills .nav-link.active{ background: var(--caoba-accent); color:#fff; border-color: var(--caoba-accent-hover); }
+.nav-pills .nav-link:hover{ background: var(--caoba-accent-hover); color:#fff; border-color: var(--caoba-accent-hover); }
+
+/* Card hover/selezione */
+.startup-card{
+  transition: background-color .2s ease, border-color .2s ease, transform .15s ease;
+  position: relative;
+  border-radius: 1rem; /* ⬅️ arrotonda sempre */
+}
+.startup-card{
+  background: var(--copper-green);
+  border:1px solid rgba(255,255,255,.08);
+  color: var(--text-bright);
+  padding: var(--card-padding);
+}
+.startup-card:hover{
+  background: var(--copper-green-hover);
+  color:#fff;
+  border-color: rgba(255,255,255,.18);
+  transform: translateY(-2px);
+  box-shadow:0 6px 14px rgba(0,0,0,.55);
+}
+
+/* Stato ZERO: velo rosso, bordi arrotondati */
+.startup-card.zero{
+  background: var(--danger-veil);
+  border:2px solid var(--danger-border);
+  border-radius:1rem;
+  color:#fff;
+}
+.startup-card.zero:hover{ background: var(--danger-veil-hover); border-width:2px; }
+
+/* Critical state border more visible */
+.startup-card.border-danger{ border-width:2px !important; border-color:#dc3545 !important; }
+
+/* Badge INACTIVE */
+.badge-inactive{
+  position:absolute; top:.75rem; right:.75rem;
+  background:#dc3545; color:#fff; border-radius:999px;
+  padding:.25rem .55rem; font-size:.7rem; letter-spacing:.04em; font-weight:700;
+  box-shadow:0 2px 8px rgba(220,53,69,.35);
+}
+
+/* Filtro: bottone solo icona + menu compatto */
+.filter-btn{
+  width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--beige-border); background:var(--warm-beige); color:var(--deep-black); border-radius:.75rem;
+  transition:background .2s ease, transform .15s ease, color .15s ease, border-color .15s ease;
+}
+.filter-btn:hover{ background:var(--caoba-accent-hover); color:#fff; border-color: var(--caoba-accent-hover); cursor:pointer; transform:translateY(-2px); }
+.filter-icon{ width:20px; height:20px; fill: currentColor; display:block; }
+.dropdown-menu.filter-menu{
+  background:var(--warm-beige); border:1px solid var(--beige-border); color:#1d211c;
+}
+.dropdown-menu.filter-menu .dropdown-item{
+  color:#1d211c; font-size:.85rem;
+}
+.dropdown-menu.filter-menu .dropdown-item.active,
+.dropdown-menu.filter-menu .dropdown-item:active{
+  background: var(--caoba-accent); color:#fff;
+}
+.dropdown-menu.filter-menu .dropdown-item:hover{ background: var(--caoba-accent-hover); color:#fff; }
+
+/* SearchBar input on soft surface */
+.input-group-text.bg-dark{ background: var(--warm-beige) !important; color: var(--deep-black) !important; border-color: var(--beige-border) !important; }
+.form-control.bg-dark{ background: var(--warm-beige) !important; color: var(--deep-black) !important; border-color: var(--beige-border) !important; }
+.form-control.bg-dark::placeholder{ color:#6b6b6b; }
+.form-control.bg-dark:focus{ outline:none; box-shadow:none; border-color: var(--beige-border) !important; }
+.form-control.bg-dark:focus-visible{ outline:none; box-shadow:none; border-color: var(--beige-border) !important; }
+
+/* Header buttons (Home/Language) beige on green, hover accent */
+.navbar .btn-outline-light, .btn-outline-success{
+  background: var(--warm-beige);
+  color: var(--deep-black);
+  border:1px solid var(--beige-border);
+}
+.navbar .btn-outline-light:hover, .btn-outline-success:hover{
+  background: var(--caoba-accent-hover);
+  color:#fff;
+  border-color: var(--caoba-accent-hover);
+}
+/* Keep dropdown toggle beige when expanded (selected) */
+.navbar .btn-outline-light[aria-expanded="true"]{ background: var(--warm-beige); color: var(--deep-black); }
+
+/* Global buttons: default soft surface, selected accent */
+.btn-outline-light, .btn-outline-success{
+  background: var(--warm-beige) !important;
+  color: var(--deep-black) !important;
+  border:1px solid var(--beige-border) !important;
+}
+.leaderboard-toggle .btn{ border:none !important; box-shadow:none !important; }
+.btn-outline-light:hover, .btn-outline-success:hover{
+  background: var(--caoba-accent-hover) !important;
+  color:#fff !important;
+  border-color: var(--caoba-accent-hover) !important;
+}
+.btn-success{
+  background: var(--caoba-accent) !important;
+  border-color: var(--caoba-accent-hover) !important;
+  color:#fff !important;
+}
+.btn-success:hover{
+  background: var(--caoba-accent-hover) !important;
+}
+
+/* Leaderboard: "come prima", bordo visibile e clickable */
+.selectable-row{
+  background: var(--copper-green);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:.85rem;
+  padding: var(--card-padding);
+  transition: background .2s ease, transform .15s ease, box-shadow .15s ease;
+  cursor:pointer;
+  color: var(--text-bright);
+}
+.selectable-row:hover{
+  background: var(--copper-green-hover); color:#fff; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.55);
+  border-color: rgba(255,255,255,.18);
+}
+
+/* Rank badge square for leaderboard rows */
+.rank-badge{ width:36px; height:36px; border-radius:.5rem; border:1px solid rgba(0,0,0,.08); font-weight:700; }
+
+/* Leaderboard row ZERO state: match startup-card.zero styling */
+.selectable-row.zero{
+  background: var(--danger-veil);
+  border:1px solid var(--danger-border);
+  color:#fff;
+}
+.selectable-row.zero:hover{ background: var(--danger-veil-hover); }
+
+/* Responsive grid for startup cards: equal-sized, auto-wrap with min width */
+.responsive-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--card-gap);
+  align-items: stretch; /* ensure items match row height */
+}
+/* Standard vertical stacking gap utility */
+.stack-gap{ display:flex; flex-direction:column; gap: var(--card-gap); }
+
+/* Standard gutters for Bootstrap rows containing cards: ensures vertical spacing when columns stack */
+.cards-row{ --bs-gutter-x: var(--card-gap); --bs-gutter-y: var(--card-gap); }
+
+.responsive-grid > .grid-item{
+  display: flex;
+}
+.responsive-grid .startup-card{
+  width:100%;
+  height:100%;
+}
+
+/* Slightly reduce timer sizes inside StartupCard */
+.startup-card .display-5{ font-size: 2.6rem; }
+.startup-card .display-6{ font-size: 2.1rem; }
+
+/* InfoStrip labels slightly darker secondary on green surface */
+.surface .info-label{ color: var(--secondary-text-darker) !important; }
+
+/* Disable text selection globally except form fields and contenteditable */
+:where(body, body *){ user-select: none; -webkit-user-select: none; }
+input, textarea, select, [contenteditable="true"], [contenteditable=""]{ user-select: text !important; -webkit-user-select: text !important; }
+
+/* Info icon tooltip styling */
+.info-container{position:relative; display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:999px; background:var(--warm-beige); color:var(--deep-black); font-size:.7rem; font-weight:700; cursor:help; line-height:1; box-shadow:0 2px 6px rgba(0,0,0,.25);} 
+.info-container:focus,.info-container:hover{background:var(--caoba-accent-hover); color:#fff;} 
+.info-icon{display:inline-block; line-height:1;} 
+.info-tooltip{position:absolute; bottom:110%; left:50%; transform:translateX(-50%); white-space:normal; min-width:180px; max-width:320px; background:var(--warm-beige); padding:.75rem .9rem; border:1px solid var(--beige-border); border-radius:.6rem; font-size:.9rem; line-height:1.35; letter-spacing:.01em; color:#1d211c; opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease; z-index:10; box-shadow:0 6px 22px rgba(0,0,0,.55);} 
+.surface .info-tooltip{ background: var(--copper-green); color: var(--light-gray); border-color: rgba(255,255,255,.18); }
+.info-container:hover .info-tooltip,.info-container:focus .info-tooltip{opacity:1; transform:translate(-50%,-4px);} 
+
+/* InfoStrip labels on beige card slightly darker */
+.surface-soft .info-label{ color: #2e2e2e !important; }

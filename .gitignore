@@ -1,0 +1,9 @@
+# dependencies
+node_modules/
+
+# Vite cache
+.vite/
+
+#env
+.env
+.env.local
