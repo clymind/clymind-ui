@@ -58,7 +58,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   // ===== DATA FROM BACKEND =====
-  const { startups: STARTUPS, config: SETTINGS, triggerRefresh } = useDashboard(60000);
+  const { startups: STARTUPS, config: SETTINGS, error, triggerRefresh } = useDashboard(60000);
 
   // ===== COMPUTED VALUES =====
   const q = query.trim().toLowerCase();
@@ -146,6 +146,25 @@ export default function Home() {
           lightFactor={SETTINGS?.lightFactor || 25}
           dailyLightHours={SETTINGS?.dailyLightHours || 10}
         />
+
+        {/* Connection error banner.
+            useDashboard keeps the previous data on failure, so without this a failed
+            request and a genuinely empty dataset look identical: an empty grid with no
+            feedback. Wording depends on whether we still have something to show. */}
+        {error && (
+          <div className="alert alert-warning d-flex align-items-center gap-3 mt-3 mb-0" role="alert">
+            <span className="flex-grow-1">
+              {STARTUPS.length > 0 ? t("errorStale") : t("errorNoData")}
+            </span>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-dark flex-shrink-0"
+              onClick={triggerRefresh}
+            >
+              {t("refresh")}
+            </button>
+          </div>
+        )}
 
         {/* Search, filter, and tab controls */}
   <div className="surface mt-3">

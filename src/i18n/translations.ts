@@ -32,6 +32,8 @@ export const translations: Record<Lang, Dict> = {
     expiryLabel: "Expiry of accumulated hours",
     expiryAfter: "After {d} days",
   expiryLabelHelp: "Accumulated light hours expire after this many days.",
+    errorNoData: "Couldn’t load the dashboard. The service may be unavailable, or your session may have expired.",
+    errorStale: "Couldn’t refresh: showing the last data received.",
     allStartupsTitle: "All startups",
     allStartupsDesc:
       "This page shows the remaining light hours for each startup, with leaderboards that rank startups by total accumulated light hours over the last {d} days and overall. You can reload the page after adding hours to the e-logbook, to see updated values, search startups by name, and filter them by remaining hours.",
@@ -73,6 +75,8 @@ export const translations: Record<Lang, Dict> = {
     expiryLabel: "Scadenza ore accumulate",
     expiryAfter: "Dopo {d} giorni",
   expiryLabelHelp: "Le ore di luce accumulate scadono dopo questo numero di giorni.",
+    errorNoData: "Impossibile caricare la dashboard. Il servizio potrebbe non essere raggiungibile, oppure la sessione è scaduta.",
+    errorStale: "Aggiornamento non riuscito: stai vedendo gli ultimi dati ricevuti.",
     allStartupsTitle: "Tutte le startup",
     allStartupsDesc:
       "Questa pagina mostra le ore di luce residue per ogni startup, con classifiche che ordinano per ore di luce accumulate negli ultimi {d} giorni e complessive. Puoi ricaricare dopo aver aggiunto ore nell'e-logbook per vedere i valori aggiornati, cercare per nome e filtrare per ore residue.",
@@ -114,6 +118,8 @@ export const translations: Record<Lang, Dict> = {
     expiryLabel: "Ablauf der gesammelten Stunden",
     expiryAfter: "Nach {d} Tagen",
   expiryLabelHelp: "Gesammelte Lichtstunden verfallen nach dieser Anzahl von Tagen.",
+    errorNoData: "Dashboard konnte nicht geladen werden. Der Dienst ist möglicherweise nicht erreichbar oder die Sitzung ist abgelaufen.",
+    errorStale: "Aktualisierung fehlgeschlagen: Es werden die zuletzt empfangenen Daten angezeigt.",
     allStartupsTitle: "Alle Startups",
     allStartupsDesc:
       "Diese Seite zeigt die verbleibenden Lichtstunden je Startup und Bestenlisten nach gesammelten Lichtstunden der letzten {d} Tage und insgesamt. Du kannst nach dem Eintragen im e-Logbuch neu laden, um aktualisierte Werte zu sehen, nach Namen suchen und nach verbleibenden Stunden filtern.",
@@ -155,6 +161,8 @@ export const translations: Record<Lang, Dict> = {
     expiryLabel: "Expiration des heures cumulées",
     expiryAfter: "Après {d} jours",
   expiryLabelHelp: "Les heures de lumière cumulées expirent après ce nombre de jours.",
+    errorNoData: "Impossible de charger le tableau de bord. Le service est peut-être indisponible ou votre session a expiré.",
+    errorStale: "Échec de l’actualisation : les dernières données reçues sont affichées.",
     allStartupsTitle: "Toutes les startups",
     allStartupsDesc:
       "Cette page affiche les heures de lumière restantes pour chaque startup, avec des classements par heures de lumière cumulées sur les {d} derniers jours et au total. Vous pouvez recharger après avoir ajouté des heures dans l’e‑journal pour voir les valeurs mises à jour, rechercher par nom et filtrer par heures restantes.",
